@@ -15,7 +15,10 @@
   ],
   "dependencies": {
     "angular": "~1.4.4",
-    "youtube-iframe-api": "~0.0.1"
+    "youtube-iframe-api": "~0.0.1",
+    "jasmine": "~2.3.4",
+    "karma": "~0.4.6",
+    "angular-mocks": "~1.4.4"
   },
   "private": true
 }
