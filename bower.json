@@ -1,0 +1,21 @@
+{
+  "name": "ytseq",
+  "main": "ytseq.js",
+  "version": "0.0.0",
+  "authors": [
+    "delavara <codygeronimo@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.4",
+    "youtube-iframe-api": "~0.0.1"
+  },
+  "private": true
+}

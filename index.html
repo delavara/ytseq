@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/bower_components/youtube-iframe-api/youtube.iframe-api.js"></script>
+        <script src="/ytseq.js"></script>
+    </head>
+    <body data-ng-app="ytseq">
+       <div data-ng-controller='sequenceController'>
+            <button ng-click="start()">Start</button>
+            <div data-ng-repeat="videoId in sequencer.youtubeIds">
+                <div data-ng-controller="mockYoutubeController" data-ng-init="video=videoId">
+                    <div data-ng-bind="message"></div>
+                    <button ng-click="mute()">MUTE</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
