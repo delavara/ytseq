@@ -11,7 +11,7 @@ describe('ytSeq', function() {
 
     describe('sequenceController', function() {
 
-        it('should load with preset youtube videos', function() {
+        it('should load list of objects with youtubeIds', function() {
             var $scope = {videoIds: ['test_id']};
             var controller = $controller('sequenceController', {$scope: $scope});
             expect($scope.players.length).toEqual(1);

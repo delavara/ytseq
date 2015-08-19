@@ -1,44 +1,45 @@
 var sequencer = {
-    tempo:5000,
-    youTubePlayers:[],
+    tempo: 500,
     currentIndex: 0,
-    playOn:false
+    playOn: false,
+    _setTimeoutId: null,
+    steps: 16,
+
+    outCb: function(data, index) {
+        return;
+    },
+
+    step: function() {
+        this._setTimeoutId = setTimeout(function() {
+            this.currentIndex = this.currentIndex + 1 % this.steps;
+            this.outCb({}, this.currentIndex);
+            this.step();
+        }.bind(this), this.tempo);
+    },
+
+    start: function() {
+        this.playOn = true;
+        this.step();
+    },
+
+    stop: function() {
+      this.playOn = false;
+      clearTimeout(this._setTimeoutId);
+    }
 };
 
-sequencer.start = function() {
-  setTimeout(function() {
-    player.setVolume(0);
-    if (playOn) {
-      playerNumber++;
-      playVideo(playerNumber % steps);
-    }
-  }, tempo);
+
+var test = function(data, index) {
+    var list = [1, 2, 3, 4];
 };
+
+sequencer.outCb = test;
+sequencer.start();
 
 
 var ytseqApp = angular.module('ytseq', []);
 
 ytseqApp.controller('sequenceController', ['$scope', function($scope) {
     $scope.videoIds = $scope.videoIds || [];
-    $scope.players = [];
-    $scope.sequencer = sequencer;
 
 }]);
-
-ytseqApp.controller('mockYoutubeController', ['$scope', function($scope) {
-    $scope.is_muted = true;
-    $scope.message = "no way";
-
-    $scope.mute = function(videoId) {
-        $scope.is_muted = !$scope.is_muted;
-        if ($scope.is_muted) {
-            $scope.message = 'muted';
-        } else {
-            $scope.message = 'no way';
-        }
-    };
-}]);
-
-ytseqApp.directive('youtubePlayer', function($scope) {
-
-});
