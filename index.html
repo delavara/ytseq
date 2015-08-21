@@ -3,14 +3,17 @@
         <script src="/bower_components/angular/angular.js"></script>
         <script src="/bower_components/youtube-iframe-api/youtube.iframe-api.js"></script>
         <script src="/static/js/ytseq.js"></script>
+        <script src="/static/js/lib/sequencer.js"></script>
         <script src="/static/js/directives/cable.js"></script>
         <script src="/static/js/directives/clock.js"></script>
+        <script src="/static/js/directives/board.js"></script>
+        <script src="/static/js/directives/youtubeSequencer.js"></script>
     </head>
     <body data-ng-app="ytseq">
-       <board modules="[]">
-        <clock ng-attr-name="out1"></clock>
-        <youtubeSequencer ng-attr-name="seq1" ng-attr-current-index="0" ng-attr-videoids="['LWTdQXbMFYE', '-r72xdovB-E']"></youtubesequencer>
-        <cable ng-attr-from="out1" ng-attr-to="seq1"></cable>
-       </board>
+        <board modules="[]">
+            <clock name="out1"></clock>
+            <youtubeSequencer name="seq1" current-index="0" videoids="['LWTdQXbMFYE', '-r72xdovB-E']"></youtubesequencer>
+            <cable from="out1" to="seq1"></cable>
+        </board>
     </body>
 </html>

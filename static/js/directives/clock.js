@@ -10,7 +10,6 @@ angular.module('ytseq').directive('clock', function($window) {
         link: function(scope, element, attrs, boardController) {
             scope.sequencer = sequencer();
             var setOut = function(data) {
-              console.log("data: " + data);
               scope.out = data;
               scope.$apply();
             }.bind(scope);
