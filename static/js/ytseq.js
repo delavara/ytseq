@@ -13,15 +13,15 @@ var sequencer = function() { return {
         console.log('stepping');
         this._setTimeoutId = setTimeout(function() {
             this.currentIndex = this.currentIndex + 1 % this.steps;
-            this.outCb({index: this.currentIndex});
+            this.outCb({index: this.currentIndex, start: true});
             this.step();
         }.bind(this), this.tempo);
     },
 
     start: function() {
         console.log('starting!');
-        this.playOn = true;
         this.step();
+        this.playOn = true;
     },
 
     stop: function() {
@@ -78,6 +78,10 @@ ytseqApp.directive('clock', function($window) {
             scope.sequencer.outCb = setOut;
 
             scope.start =  function() {
+                if (scope.sequencer.playOn) {
+                    scope.sequencer.stop();
+                    return;
+                }
                 scope.sequencer.start();
             };
             boardController.setModule(scope);
@@ -113,7 +117,8 @@ ytseqApp.directive('youtubesequencer', function($window) {
             name: '@',
             videoIds: '=videoids',
             inp: '&',
-            currentIndex: '='
+            currentIndex: '=',
+            players: '='
         },
         link: function(scope, element, attrs, boardController) {
             var tag = document.createElement('script');
@@ -123,6 +128,11 @@ ytseqApp.directive('youtubesequencer', function($window) {
 
             scope.players = [];
             scope.previousIndex = -1;
+            scope.playAll = function() {
+                for (var player in scope.players) {
+                        scope.players[player].playVideo();
+                }
+            }.bind(scope);
 
             $window.onYouTubeIframeAPIReady = function() {
                 // order is important so we loop by index
@@ -139,9 +149,23 @@ ytseqApp.directive('youtubesequencer', function($window) {
                 };
             }.bind(scope);
 
-            scope.inp = function(data, index) {
+            scope.inp = function(data) {
+                if (data === undefined)
+                        return
+                if (scope.players === [])
+                        return
+                if (data.start === true)
+                    scope.playAll();
+                scope.currentIndex = data.index % scope.players.length
+                if (scope.previousIndex >= 0) {
+                    var lastPlayer = scope.players[scope.previousIndex];
+                        console.log(scope.previousIndex + " OFF " + data.index);
+                    lastPlayer.setVolume(0);
+                }
+                console.log(scope.currentIndex + " ON ");
+                var player = scope.players[scope.currentIndex];
+                player.setVolume(100);
                 scope.previousIndex = scope.currentIndex;
-                scope.currentIndex = index;
             }.bind(scope);
 
             boardController.setModule(scope);
