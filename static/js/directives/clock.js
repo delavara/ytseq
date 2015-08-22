@@ -16,7 +16,6 @@ var clock = function() {
         },
 
         start: function() {
-            console.log('starting!');
             this.playOn = true;
             this.step();
             this._setTimeoutId = setTimeout(this.step, this.tempo);
@@ -34,10 +33,10 @@ angular.module('ytseq').directive('clock', function($window) {
         restrict: "E",
         template: '<div><button ng-click="start()">Start</button></div>',
         scope: {
-            name: '@',
-            out: '@'
+            name: '@'
         },
         link: function(scope, element, attrs) {
+            scope.out = {};
             scope.clock = clock();
 
             var setTrigger = function(data) {

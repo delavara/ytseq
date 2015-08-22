@@ -7,7 +7,7 @@ describe('clock directive', function() {
     beforeEach(function() {
         module('ytseq');
         inject(function($rootScope, $compile) {
-            element = angular.element('<clock name="obj" out="out1"></clock>');
+            element = angular.element('<clock name="obj"></clock>');
             $compile(element)($rootScope);
         });
       });
@@ -19,7 +19,7 @@ describe('clock directive', function() {
 
     it('should have an out', function() {
         var scope = element.isolateScope();
-        expect(scope.out).toEqual('out1');
+        expect(scope.out).toBeDefined();
     });
 
     it('should have a start function', function() {
@@ -39,6 +39,13 @@ describe('clock directive', function() {
         spyOn(scope.clock, 'trigger');
         scope.start();
         expect(scope.clock.trigger).toHaveBeenCalled();
+    });
+
+    it('should update out when triggered', function() {
+        var scope = element.isolateScope();
+        spyOn(scope, 'out');
+        scope.start();
+        expect(scope.out).toBeDefined();
     });
 
 });
