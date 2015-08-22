@@ -22,30 +22,61 @@ describe('clock directive', function() {
         expect(scope.out).toBeDefined();
     });
 
-    it('should have a start function', function() {
-        var scope = element.isolateScope();
-        expect(scope.start).toBeDefined();
+    describe('start', function () {
+        it('should update out when triggered', function() {
+            var scope = element.isolateScope();
+            spyOn(scope, 'out');
+
+            scope.start();
+
+            expect(scope.out.index).toBeDefined();
+            expect(scope.out.start).toBeDefined();
+        });
+
+        it('should start the clock when start is called', function() {
+            var scope = element.isolateScope();
+
+            scope.start();
+
+            expect(scope.clock.playOn).toBe(true);
+        });
+
+        it('should call the trigger when start is called', function() {
+            var scope = element.isolateScope();
+            spyOn(scope.clock, 'trigger');
+            scope.start();
+            expect(scope.clock.trigger).toHaveBeenCalled();
+        });
+
+        it('should have a setTimeoutId', function() {
+            var scope = element.isolateScope();
+
+            scope.start();
+            
+            expect(scope.clock._setTimeoutId).toBeDefined();
+        });
     });
 
-    it('should start the clock when start is called', function() {
-        var scope = element.isolateScope();
-        spyOn(scope.clock, 'start');
-        scope.start();
-        expect(scope.clock.start).toHaveBeenCalled();
-    });
+    describe('stop', function() {
 
-    it('should call the trigger when start is called', function() {
-        var scope = element.isolateScope();
-        spyOn(scope.clock, 'trigger');
-        scope.start();
-        expect(scope.clock.trigger).toHaveBeenCalled();
-    });
+        it('should stop the clock', function() {
+            var scope = element.isolateScope();
+            expect(scope.stop).toBeDefined();
+            scope.start();
 
-    it('should update out when triggered', function() {
-        var scope = element.isolateScope();
-        spyOn(scope, 'out');
-        scope.start();
-        expect(scope.out).toBeDefined();
-    });
+            scope.stop();
 
+            expect(scope.clock.playOn).toBe(false);
+        });
+
+        it('should clear the timeout', function() {
+            var scope = element.isolateScope();
+            expect(scope.stop).toBeDefined();
+            scope.start();
+
+            scope.stop();
+
+            expect(scope.clock._setTimeoutId).toBe(null);
+        });
+    });
 });

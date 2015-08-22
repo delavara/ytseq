@@ -24,6 +24,7 @@ var clock = function() {
         stop: function() {
           this.playOn = false;
           clearTimeout(this._setTimeoutId);
+          this._setTimeoutId = null;
         }
    };
 };
@@ -53,6 +54,10 @@ angular.module('ytseq').directive('clock', function($window) {
                 }
                 scope.clock.start();
             }.bind(scope);
+
+            scope.stop = function() {
+                scope.clock.stop();
+            };
         }
     };
 });
