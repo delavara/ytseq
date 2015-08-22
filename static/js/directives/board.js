@@ -14,6 +14,8 @@ angular.module('ytseq').directive('board', function($window) {
                 }
             };
         },
-        link: function() {}
+        link: function(scope, element, attr) {
+            scope.modules = [];
+        }
     };
 });

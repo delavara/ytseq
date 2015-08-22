@@ -1,29 +1,61 @@
+var clock = function() {
+    return {
+        tempo: 500,
+        currentIndex: 0,
+        playOn: false,
+        _setTimeoutId: null,
+        steps: 16,
+
+        trigger: function(data, index) {
+            return;
+        },
+
+        step: function() {
+            this._setTimeoutId = setTimeout(function() {
+                this.currentIndex = (this.currentIndex + 1) % this.steps;
+                this.trigger({index: this.currentIndex, start: true});
+                this.step();
+            }.bind(this), this.tempo);
+        },
+
+        start: function() {
+            console.log('starting!');
+            this.step();
+            this.playOn = true;
+        },
+
+        stop: function() {
+          this.playOn = false;
+          clearTimeout(this._setTimeoutId);
+        }
+   };
+};
+
 angular.module('ytseq').directive('clock', function($window) {
     return {
         restrict: "E",
-        require: '^board',
         template: '<div><button ng-click="start()">Start</button></div>',
         scope: {
             name: '@',
             out: '@'
         },
-        link: function(scope, element, attrs, boardController) {
-            scope.sequencer = sequencer();
-            var setOut = function(data) {
+        link: function(scope, element, attrs) {
+            scope.clock = clock();
+
+            var setTrigger = function(data) {
               scope.out = data;
               scope.$apply();
             }.bind(scope);
 
-            scope.sequencer.outCb = setOut;
+            scope.clock.trigger = setTrigger;
 
             scope.start =  function() {
-                if (scope.sequencer.playOn) {
-                    scope.sequencer.stop();
+                if (scope.clock.playOn) {
+                    scope.clock.stop();
                     return;
                 }
-                scope.sequencer.start();
-            };
-            boardController.setModule(scope);
+                scope.clock.start();
+            }.bind(scope);
         }
     };
 });

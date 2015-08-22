@@ -1,17 +1,24 @@
 'use strict'
 
 describe('clock directive', function() {
-    beforeEach(module('ytseq'));
+    var $scope;
+    var element;
 
-    beforeEach(inject(function(_$controller_) {
-        $controller = _$controller_;
-      }));
+    beforeEach(function() {
+        module('ytseq');
+        inject(function($rootScope, $compile) {
+            element = angular.element('<clock name="obj" out="out1"></clock>');
+            $compile(element)($rootScope);
+        });
+      });
 
+    it('should have a name', function() {
+        var scope = element.isolateScope();
+        expect(scope.name).toEqual("obj");
+    });
 
-    it('should load list of objects with youtubeIds', function() {
-        var $scope = {videoIds: ['test_id']};
-        var controller = $controller('sequenceController', {$scope: $scope});
-        expect($scope.players.length).toEqual(1);
-        expect($scope.players[0].youtubeId).toEqual('test_id');
+    it('should have an out', function() {
+        var scope = element.isolateScope();
+        expect(scope.out).toEqual('out1');
     });
 });
