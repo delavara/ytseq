@@ -11,17 +11,15 @@ var clock = function() {
         },
 
         step: function() {
-            this._setTimeoutId = setTimeout(function() {
-                this.currentIndex = (this.currentIndex + 1) % this.steps;
-                this.trigger({index: this.currentIndex, start: true});
-                this.step();
-            }.bind(this), this.tempo);
+            this.currentIndex = (this.currentIndex + 1) % this.steps;
+            this.trigger({index: this.currentIndex, start: true});
         },
 
         start: function() {
             console.log('starting!');
-            this.step();
             this.playOn = true;
+            this.step();
+            this._setTimeoutId = setTimeout(this.step, this.tempo);
         },
 
         stop: function() {
