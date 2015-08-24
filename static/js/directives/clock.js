@@ -39,6 +39,7 @@ angular.module('ytseq').directive('clock', function($window) {
         link: function(scope, element, attrs) {
             scope.out = {};
             scope.clock = clock();
+            debugger;
 
             var setTrigger = function(data) {
               scope.out = data;

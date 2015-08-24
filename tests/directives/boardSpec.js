@@ -20,8 +20,12 @@ describe('board directive', function() {
     };
 
     it('should have a modules array', function() {
-        var name = directiveElem.append('<clock name="test1"></div>');
         var isolatedScope = directiveElem.isolateScope();
         expect(isolatedScope.modules.length).toBe(0);
+    });
+    
+    it('should have a getModule method', function() {
+        var isolatedScope = directiveElem.isolateScope();
+        expect(isolatedScope.getModule).toBeDefined();
     });
 });
