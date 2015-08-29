@@ -67,7 +67,7 @@ var ytseqApp = angular.module('ytseq', []);
 ytseqApp.directive('youtubevideo', function($window) {
     return {
         restrict: "E",
-        template: '<div>lol</div>',
+        template: '<div class="col s3 hoverable"><div class="video-container"><div></div></div></div>',
         scope: {},
         link: function(scope, element, attrs) {
             scope.videoId = attrs.videoid;
@@ -83,8 +83,9 @@ ytseqApp.directive('youtubevideo', function($window) {
                 this.player.setVolume(level);
             }
 
-            scope.player = new YT.Player(element.children()[0], {
-                height: '200',
+            var videoContainerDiv = element.children().children();
+            scope.player = new YT.Player(videoContainerDiv.children()[0], {
+                height: '250',
                 width: '340',
                 videoId: attrs.videoid
             });
@@ -133,15 +134,29 @@ ytseqApp.directive('youtubesequencer', function($window, $compile) {
             }.bind(scope);
 
             $window.onYouTubeIframeAPIReady = function() {
+                var numRows = scope.videoIds.length / 4;
+                var rows = [];
+
+                for (var ix = 0; ix < numRows; ix++) {
+                    var row = angular.element("<div class='row'>");
+                    rows.push(row);
+                }
+
                 for (var ix = 0; ix < scope.videoIds.length; ix++) {
                     var youtubeVideo = angular.element('<youtubeVideo>');
                     youtubeVideo.attr('videoid', scope.videoIds[ix]);
                     youtubeVideo = $compile(youtubeVideo)(scope);
                     scope.players.push(youtubeVideo);
-                    element.children().append(youtubeVideo);
+                    currentRow = Math.floor(ix / 4);
+                    rows[currentRow].append(youtubeVideo);
                 }
+
+                for (var ix = 0; ix < rows.length; ix++) {
+                    element.children().append(rows[ix]);
+                }
+
                 scope.$apply();
-            }.bind(scope);
+            }
         },
     }
 });
@@ -149,22 +164,25 @@ ytseqApp.directive('youtubesequencer', function($window, $compile) {
 ytseqApp.directive('clock', function($window) {
     return {
         restrict: "E",
-        template: '<div><button ng-click="start()">{{action}}</button></div>',
+        template: '<button class="btn col s12 {{buttonColor}}" ng-click="start()">{{action}}</button>',
         scope: {
             name: '@'
         },
         link: function(scope, element, attrs) {
             scope.out = {};
             scope.action = "start";
+            scope.buttonColor = "green";
 
             scope.start =  function() {
                 if (clock.playOn) {
                     clock.stop();
                     this.action = 'start';
+                    this.buttonColor = "green";
                     return;
                 }
                 clock.start();
                 this.action = 'stop';
+                this.buttonColor = "red";
             }
         }
     };

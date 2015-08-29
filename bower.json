@@ -14,11 +14,13 @@
     "tests"
   ],
   "dependencies": {
+    "Materialize": "materialize#~0.97.0",
     "angular": "~1.4.4",
-    "youtube-iframe-api": "~0.0.1",
+    "angular-mocks": "~1.4.4",
     "jasmine": "~2.3.4",
     "karma": "~0.4.6",
-    "angular-mocks": "~1.4.4"
+    "timbre.js": "timbre#*",
+    "youtube-iframe-api": "~0.0.1"
   },
   "private": true
 }
