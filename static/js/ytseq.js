@@ -27,7 +27,7 @@ var clock = function() {
         },
 
         startInterval() {
-            var interval = T('interval', {interval:"BPM128 L16"}, this.step);
+            var interval = T('interval', {interval:"BPM128 L16"}, this.step.bind(this));
             interval.start();
         },
 
@@ -69,15 +69,19 @@ ytseqApp.directive('youtubevideo', function($window) {
         restrict: "E",
         template: '<div>lol</div>',
         scope: {
-            videoId: '=videoid',
         },
         link: function(scope, element, attrs) {
+            scope.videoId = attrs.videoid;
             scope.play = function() {
                 this.player.playVideo();
             }
 
             scope.stop = function() {
                 this.player.stopVideo();
+            }
+
+            scope.volume = function(level) {
+                this.player.setVolume(level);
             }
 
             scope.player = new YT.Player(element.children()[0], {
@@ -95,12 +99,13 @@ ytseqApp.directive('youtubesequencer', function($window, $compile) {
         restrict: "E",
         template: '<div class="queue-wrapper"></div>',
         scope: {
-            videoIds: '=videoids',
-            currentIndex: '=',
             players: '='
         },
         link: function(scope, element, attrs) {
+            scope.videoIds = ['FA0wAheWjYw', 'OaUiepqoYYI', 'IVpTCz62uS8', '24tWz7gmngI', 'pAkgtw4tdWY', 'KBluUZ4NnZg'];
             scope.players = [];
+            scope.previousIndex = -1;
+            scope.currentIndex = 0;
 
             scope.playAll = function() {
                 this.players.map(function(obj) {obj.isolateScope().play()});
@@ -115,11 +120,24 @@ ytseqApp.directive('youtubesequencer', function($window, $compile) {
                     scope.playAll();
                 if (data.start < 0)
                     scope.stopAll();
+                if (data.start == 0) {
+                    scope.currentIndex = data.index % scope.players.length
+                    if (scope.previousIndex >= 0) {
+                        var lastPlayer = scope.players[scope.previousIndex];
+                        lastPlayer.isolateScope().volume(0);
+                    }
+
+                    var player = scope.players[scope.currentIndex];
+                    player.isolateScope().volume(100);
+                    scope.previousIndex = scope.currentIndex;
+                }
             }.bind(scope);
 
             $window.onYouTubeIframeAPIReady = function() {
                 for (var ix = 0; ix < scope.videoIds.length; ix++) {
-                    var youtubeVideo = $compile('<youtubeVideo videoid="' + scope.videoIds[ix] + '">')(scope);
+                    var youtubeVideo = angular.element('<youtubeVideo>');
+                    youtubeVideo.attr('videoid', scope.videoIds[ix]);
+                    youtubeVideo = $compile(youtubeVideo)(scope);
                     scope.players.push(youtubeVideo);
                     element.children().append(youtubeVideo);
                 }
