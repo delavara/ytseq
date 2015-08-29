@@ -149,19 +149,22 @@ ytseqApp.directive('youtubesequencer', function($window, $compile) {
 ytseqApp.directive('clock', function($window) {
     return {
         restrict: "E",
-        template: '<div><button ng-click="start()">Start</button></div>',
+        template: '<div><button ng-click="start()">{{action}}</button></div>',
         scope: {
             name: '@'
         },
         link: function(scope, element, attrs) {
             scope.out = {};
+            scope.action = "start";
 
             scope.start =  function() {
                 if (clock.playOn) {
                     clock.stop();
+                    this.action = 'start';
                     return;
                 }
                 clock.start();
+                this.action = 'stop';
             }
         }
     };
