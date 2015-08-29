@@ -1,18 +1,13 @@
 <html>
     <head>
         <script src="/bower_components/angular/angular.js"></script>
+        <script src="/bower_components/timbre.js/timbre.dev.js"></script>
         <script src="/bower_components/youtube-iframe-api/youtube.iframe-api.js"></script>
         <script src="/static/js/ytseq.js"></script>
-        <script src="/static/js/directives/cable.js"></script>
-        <script src="/static/js/directives/clock.js"></script>
-        <script src="/static/js/directives/board.js"></script>
-        <script src="/static/js/directives/youtubeSequencer.js"></script>
     </head>
     <body data-ng-app="ytseq">
-        <board modules="[]">
-            <clock name="out1"></clock>
+            <clock></clock>
             <youtubeSequencer name="seq1" current-index="0" videoids="['LWTdQXbMFYE', '-r72xdovB-E']"></youtubesequencer>
-            <cable from="out1" to="seq1"></cable>
-        </board>
+        </div>
     </body>
 </html>
