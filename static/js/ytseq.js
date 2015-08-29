@@ -68,8 +68,7 @@ ytseqApp.directive('youtubevideo', function($window) {
     return {
         restrict: "E",
         template: '<div>lol</div>',
-        scope: {
-        },
+        scope: {},
         link: function(scope, element, attrs) {
             scope.videoId = attrs.videoid;
             scope.play = function() {
