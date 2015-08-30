@@ -5,10 +5,11 @@ firstScriptTag.parentNode.insertBefore(youtubeTag, firstScriptTag);
 
 var clock = function() {
     return {
-        tempo: 500,
+        tempo: 128,
         currentIndex: 0,
         playOn: false,
-        _setTimeoutId: null,
+        clockDivide: 4,
+        interval: null,
         steps: 16,
 
         trigger: function(data, index) {
@@ -16,8 +17,10 @@ var clock = function() {
         },
 
         step: function(count) {
-            this.currentIndex = (this.currentIndex + 1) % this.steps;
-            this.trigger({index: this.currentIndex, start: 0});
+            if ((count % this.clockDivide) == 0) {
+                this.currentIndex = (this.currentIndex + 1) % this.steps;
+                this.trigger({index: this.currentIndex, start: 0});
+            }
         },
 
         start: function() {
@@ -27,15 +30,14 @@ var clock = function() {
         },
 
         startInterval: function() {
-            var interval = T('interval', {interval:"BPM128 L16"}, this.step.bind(this));
-            interval.start();
+            this.interval = T('interval', {interval:"BPM" + this.tempo + " L16"}, this.step.bind(this));
+            this.interval.start();
         },
 
         stop: function() {
           this.playOn = false;
           this.trigger({start: -1});
-          clearTimeout(this._setTimeoutId);
-          this._setTimeoutId = null;
+          this.interval.stop();
         }
    };
 };
@@ -67,21 +69,34 @@ var ytseqApp = angular.module('ytseq', []);
 ytseqApp.directive('youtubevideo', function($window) {
     return {
         restrict: "E",
-        template: '<div class="col s3 hoverable"><div class="video-container"><div></div></div></div>',
-        scope: {},
+        template: '<div class="card col s3"><div class="card-image video-container"><div></div></div><div class="card-content valign-wrapper center-align"><i class="material-icons" ng-show="!isActive" >volume_mute</i><i class="material-icons" ng-show="isActive" >volume_up</i>Video Id: {{videoId}}</div></div>',
+        scope: {isActive: "="},
         link: function(scope, element, attrs) {
             scope.videoId = attrs.videoid;
+            scope.isActive = false;
+
+            scope.activate = function() {
+                this.isActive = true;
+                this.volume(100);
+                this.$apply();
+            };
+
+            scope.deActivate = function() {
+                this.isActive = false;
+                this.volume(0);
+            };
+
             scope.play = function() {
                 this.player.playVideo();
-            }
+            };
 
             scope.stop = function() {
                 this.player.stopVideo();
-            }
+            };
 
             scope.volume = function(level) {
                 this.player.setVolume(level);
-            }
+            };
 
             var videoContainerDiv = element.children().children();
             scope.player = new YT.Player(videoContainerDiv.children()[0], {
@@ -124,11 +139,12 @@ ytseqApp.directive('youtubesequencer', function($window, $compile) {
                     scope.currentIndex = data.index % scope.players.length
                     if (scope.previousIndex >= 0) {
                         var lastPlayer = scope.players[scope.previousIndex];
-                        lastPlayer.isolateScope().volume(0);
+                        lastPlayer.isolateScope().deActivate();
                     }
 
                     var player = scope.players[scope.currentIndex];
-                    player.isolateScope().volume(100);
+                    var playerScope = player.isolateScope();
+                    playerScope.activate();
                     scope.previousIndex = scope.currentIndex;
                 }
             }.bind(scope);
@@ -164,11 +180,16 @@ ytseqApp.directive('youtubesequencer', function($window, $compile) {
 ytseqApp.directive('dashboard', function($window) {
     return {
         restrict: "E",
-        template: '<button class="btn col s12 {{buttonColor}}" ng-click="start()">{{action}}</button>',
+        template: '<div class="center-align"><h1  >yt-seq</h1><p>v 0.0.1</p></div>',
+        scope: {
+           tempo: "@",
+        },
         link: function(scope, element, attrs) {
+            scope.$watch(scope.tempo, function (newTempo) {
+                clock.tempo = newTempo;
+            }),
+            scope.tempo = clock.tempo;
             scope.out = {};
-            scope.action = "start";
-            scope.buttonColor = "green";
 
         }
     };

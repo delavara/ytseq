@@ -1,13 +1,15 @@
 <html>
     <head>
         <link rel="stylesheet" href="/bower_components/Materialize/bin/materialize.css" type="text/css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <script src="/bower_components/angular/angular.js"></script>
         <script src="/bower_components/timbre.js/timbre.dev.js"></script>
         <script src="/bower_components/youtube-iframe-api/youtube.iframe-api.js"></script>
         <script src="/static/js/ytseq.js"></script>
     </head>
-    <body data-ng-app="ytseq">
-        <div class="container">
+    <body class="grey lighten-5" data-ng-app="ytseq">
+        <div class="">
+            <div class="row"><dashboard></dashboard></div>
             <div class="row"><clock></clock></div>
             <div class="row"><youtubeSequencer name='seq1' current-index='0'></youtubesequencer></div>
         </div>
