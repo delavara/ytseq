@@ -26,7 +26,7 @@ var clock = function() {
             this.startInterval();
         },
 
-        startInterval() {
+        startInterval: function() {
             var interval = T('interval', {interval:"BPM128 L16"}, this.step.bind(this));
             interval.start();
         },
@@ -159,6 +159,19 @@ ytseqApp.directive('youtubesequencer', function($window, $compile) {
             }
         },
     }
+});
+
+ytseqApp.directive('dashboard', function($window) {
+    return {
+        restrict: "E",
+        template: '<button class="btn col s12 {{buttonColor}}" ng-click="start()">{{action}}</button>',
+        link: function(scope, element, attrs) {
+            scope.out = {};
+            scope.action = "start";
+            scope.buttonColor = "green";
+
+        }
+    };
 });
 
 ytseqApp.directive('clock', function($window) {
